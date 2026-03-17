@@ -86,6 +86,12 @@ Guia completa, paso a paso y lista para servidor:
 
 - [docs/DEPLOY_DEBIAN_LINUX.md](docs/DEPLOY_DEBIAN_LINUX.md)
 
+## Despliegue en Windows
+
+Guia completa paso a paso para Windows (incluye variables de entorno explicadas y opcion como servicio):
+
+- [docs/DEPLOY_WINDOWS.md](docs/DEPLOY_WINDOWS.md)
+
 El flujo inicia desde clonar este repositorio en el servidor:
 
 - https://github.com/AnthonyQuiranza/JasperMicroServer
