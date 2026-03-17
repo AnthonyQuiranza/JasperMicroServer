@@ -112,6 +112,42 @@ ORCLPDB1 =
 
 Puedes configurarlas por sesion (temporal) o de forma permanente en Windows.
 
+### 5.0 Usar archivo .env (recomendado para desarrollo)
+
+En este proyecto, Spring Boot no lee el `.env` automaticamente por defecto.
+Por eso se incluye un script que carga el archivo `.env` y luego inicia la API.
+
+1. Crear tu archivo `.env` a partir del ejemplo:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+2. Editar `.env` con tus valores reales:
+
+```powershell
+notepad .env
+```
+
+3. Cargar `.env` e iniciar el servicio:
+
+Modo jar (recomendado):
+
+```powershell
+.\scripts\windows\run-with-env.ps1 -Mode jar
+```
+
+Modo maven:
+
+```powershell
+.\scripts\windows\run-with-env.ps1 -Mode mvn
+```
+
+Notas:
+
+- `.env` no se debe subir a GitHub.
+- El repositorio incluye `.env.example` como plantilla.
+
 ### 5.1 Variables temporales (solo la sesion actual de PowerShell)
 
 ```powershell
