@@ -86,6 +86,10 @@ Guia completa, paso a paso y lista para servidor:
 
 - [docs/DEPLOY_DEBIAN_LINUX.md](docs/DEPLOY_DEBIAN_LINUX.md)
 
+El flujo inicia desde clonar este repositorio en el servidor:
+
+- https://github.com/AnthonyQuiranza/JasperMicroServer
+
 Incluye:
 
 - Instalacion de Java y preparacion del servidor
