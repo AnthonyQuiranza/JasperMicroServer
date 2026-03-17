@@ -1,0 +1,30 @@
+# Maven / Java
+/target/
+!.mvn/wrapper/maven-wrapper.jar
+
+# IDE
+.idea/
+*.iml
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Env / secrets
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.jks
+
+# Temporary
+*.tmp
+*.swp

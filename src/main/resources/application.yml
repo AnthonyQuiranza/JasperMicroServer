@@ -1,0 +1,39 @@
+spring:
+  application:
+    name: jasper-report-api
+  datasource:
+    driver-class-name: oracle.jdbc.OracleDriver
+    # Se usa alias de tnsnames.ora, por ejemplo: ORCLPDB1
+    url: jdbc:oracle:thin:@${ORACLE_TNS_ALIAS:ORCLPDB1}
+    username: ${ORACLE_DB_USER:app_user}
+    password: ${ORACLE_DB_PASSWORD:app_password}
+    hikari:
+      data-source-properties:
+        oracle.net.tns_admin: ${ORACLE_NET_TNS_ADMIN:${TNS_ADMIN:}}
+      maximum-pool-size: ${DB_POOL_MAX_SIZE:10}
+      minimum-idle: ${DB_POOL_MIN_IDLE:2}
+      connection-timeout: 30000
+      validation-timeout: 5000
+      idle-timeout: 120000
+      max-lifetime: 1800000
+
+server:
+  port: ${PORT:8080}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,env
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  level:
+    root: INFO
+    ec.upec.jasper.api: DEBUG
+
+jasper:
+  reports-path: classpath:/reports/
+  compile-on-startup: false
