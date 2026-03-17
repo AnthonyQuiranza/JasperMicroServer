@@ -13,6 +13,31 @@ Repositorio oficial:
 - Acceso de red desde el servidor hacia Oracle (host y puerto)
 - Archivo `tnsnames.ora` con el alias que vas a usar
 
+### 1.1 Si no tienes Java, Maven o Git
+
+Verifica primero:
+
+```bash
+java -version
+mvn -version
+git --version
+```
+
+Si alguno no existe (comando no encontrado), instala todo con:
+
+```bash
+sudo apt update
+sudo apt install -y git openjdk-17-jdk maven curl unzip
+```
+
+Vuelve a validar:
+
+```bash
+java -version
+mvn -version
+git --version
+```
+
 ## 2. Instalar dependencias del sistema
 
 ```bash

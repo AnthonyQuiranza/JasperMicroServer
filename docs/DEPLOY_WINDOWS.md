@@ -16,6 +16,44 @@ Instala estos componentes:
 - Acceso de red hacia Oracle (host y puerto)
 - Archivo `tnsnames.ora` con tu alias TNS
 
+### 1.1 Si no tienes Java, Maven o Git
+
+Primero verifica en PowerShell:
+
+```powershell
+git --version
+java -version
+mvn -version
+```
+
+Si falta alguno, puedes instalarlos con `winget` (PowerShell como Administrador):
+
+```powershell
+winget install --id Git.Git -e
+winget install --id EclipseAdoptium.Temurin.17.JDK -e
+winget install --id Apache.Maven -e
+```
+
+Luego cierra y abre una nueva consola, y verifica otra vez:
+
+```powershell
+git --version
+java -version
+mvn -version
+```
+
+Si `mvn` no reconoce el comando despues de instalar Maven:
+
+1. Revisa que exista la carpeta de Maven (por ejemplo `C:\Program Files\Apache\maven\bin`).
+2. Agrega esa ruta al `PATH` del sistema.
+3. Reinicia la consola.
+
+Si no usas `winget`, instalacion manual recomendada:
+
+- Git: https://git-scm.com/download/win
+- JDK 17: https://adoptium.net/temurin/releases/?version=17
+- Maven: https://maven.apache.org/download.cgi
+
 Verifica en PowerShell:
 
 ```powershell
