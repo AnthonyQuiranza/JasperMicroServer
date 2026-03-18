@@ -33,7 +33,7 @@ public class GlobalExceptionHandler {
             ReportGenerationException ex,
             HttpServletRequest request
     ) {
-        return build(HttpStatus.INTERNAL_SERVER_ERROR, "Report Generation Error", ex.getMessage(), request);
+        return build(HttpStatus.INTERNAL_SERVER_ERROR, "Report Generation Error", buildReportErrorMessage(ex), request);
     }
 
     @ExceptionHandler(Exception.class)
@@ -59,5 +59,19 @@ public class GlobalExceptionHandler {
         );
 
         return ResponseEntity.status(status).body(response);
+    }
+
+    private String buildReportErrorMessage(ReportGenerationException ex) {
+        Throwable rootCause = ex;
+        while (rootCause.getCause() != null && rootCause.getCause() != rootCause) {
+            rootCause = rootCause.getCause();
+        }
+
+        String rootMessage = rootCause.getMessage();
+        if (rootMessage == null || rootMessage.isBlank()) {
+            return ex.getMessage();
+        }
+
+        return ex.getMessage() + " | Causa raíz: " + rootMessage;
     }
 }

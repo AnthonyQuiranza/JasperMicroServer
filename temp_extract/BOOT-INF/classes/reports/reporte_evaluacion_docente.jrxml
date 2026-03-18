@@ -1,0 +1,346 @@
+<!-- Created with Jaspersoft Studio version 7.0.3.final using JasperReports Library version 7.0.3-41034ca841d452f3305ba55b9042260aaa1ab5dd  -->
+<jasperReport name="reporte_evaluacion_docente" language="java" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="e633d264-7546-4cb2-bb8a-daaaaf311c1d">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="UPECDB"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<parameter name="P_DEPEN_CODIGO" class="java.lang.String"/>
+	<parameter name="P_INST_CODIGO" class="java.lang.String"/>
+	<parameter name="P_CICLO_ACADEMICO" class="java.lang.String"/>
+	<parameter name="P_LOGO_PATH" class="java.lang.String" forPrompting="false"/>
+	<query language="sql"><![CDATA[SELECT NIVEL_CODIGO,
+       MATERIA_CODIGO,
+       CICLO_ACAD_CODIGO,
+       DEPEN_CODIGO,
+       TFINANCIA_CODIGO,
+       TCICLOACAD_CODIGO,
+       SIST_ESTUD_CODIGO,
+       MODA_ESTUD_CODIGO,
+       INST_CODIGO,
+       DOCENTE_CEDULA,
+       MATERIA,
+       DOCENTES,
+       ESTUDIANTES_ENCUESTA,
+       ESTUDIANTES_MATRICULADOS,
+       CALIFICACION_ESTUDIANTE,
+       AUTO_EVALUACION,
+       EVALUACION_PAR,
+       EVALUACION_DIRECTIVO,
+       (ESTUDIANTES_MATRICULADOS - ESTUDIANTES_ENCUESTA) AS ESTUDIANTES_SIN_EVALUAR,
+       CALIFICACION_TOTAL
+  FROM (SELECT NIVEL_CODIGO,
+               MATERIA_CODIGO,
+               CICLO_ACAD_CODIGO,
+               DEPEN_CODIGO,
+               TFINANCIA_CODIGO,
+               TCICLOACAD_CODIGO,
+               SIST_ESTUD_CODIGO,
+               MODA_ESTUD_CODIGO,
+               INST_CODIGO,
+               DOCENTE_CEDULA,
+               MATERIA,
+               DOCENTES,
+               ESTUDIANTES_ENCUESTA,
+               ESTUDIANTES_MATRICULADOS,
+               CALIFICACION_ESTUDIANTE,
+               AUTO_EVALUACION,
+               EVALUACION_PAR,
+               EVALUACION_DIRECTIVO,
+               ROUND (
+                  ( ( (CALIFICACION_ESTUDIANTE
+                       * EVA_PCK_EVALUACION.fun_porcen_calificacion (
+                            EVA_PCK_EVALUACION.fun_encuesta_codigo (CICLO_ACAD_CODIGO, '002')))
+                     + (EVALUACION_PAR
+                        * EVA_PCK_EVALUACION.fun_porcen_calificacion (
+                             EVA_PCK_EVALUACION.fun_encuesta_codigo (CICLO_ACAD_CODIGO, '001')))
+                     + (AUTO_EVALUACION
+                        * EVA_PCK_EVALUACION.fun_porcen_calificacion (
+                             EVA_PCK_EVALUACION.fun_encuesta_codigo (CICLO_ACAD_CODIGO, '003')))
+                     + ( (EVALUACION_DIRECTIVO
+                          * EVA_PCK_EVALUACION.fun_porcen_calificacion (
+                               EVA_PCK_EVALUACION.fun_encuesta_codigo (CICLO_ACAD_CODIGO, '004')))))
+                   / 100), 2) AS CALIFICACION_TOTAL
+          FROM (  SELECT DISTINCT
+                         ATD.NIVEL_CODIGO,
+                         ATD.MATERIA_CODIGO,
+                         ATD.CICLO_ACAD_CODIGO,
+                         ATD.DEPEN_CODIGO,
+                         ATD.TFINANCIA_CODIGO,
+                         ATD.TCICLOACAD_CODIGO,
+                         ATD.SIST_ESTUD_CODIGO,
+                         ATD.MODA_ESTUD_CODIGO,
+                         ATD.INST_CODIGO,
+                         ATD.DOCENTE_CEDULA,
+                         ATM.DESCRIPCION AS MATERIA,
+                         INS_PCK_GENERAL.FUN_NOMBRES_PERSONA (ATD.DOCENTE_CEDULA) AS DOCENTES,
+                         EVA_PCK_EVALUACION.FUN_NUM_ESTUDIANTES_ENCUESTA (
+                            ATD.MATERIA_CODIGO, ATD.DOCENTE_CEDULA, ATD.INST_CODIGO,
+                            ATD.MODA_ESTUD_CODIGO, ATD.SIST_ESTUD_CODIGO, ATD.TCICLOACAD_CODIGO,
+                            ATD.TFINANCIA_CODIGO, ATD.CICLO_ACAD_CODIGO, ATD.NIVEL_CODIGO, ATD.DEPEN_CODIGO) AS ESTUDIANTES_ENCUESTA,
+                         EVA_PCK_EVALUACION.fun_num_estud_matriculados (
+                            ATD.MATERIA_CODIGO, ATD.DOCENTE_CEDULA, ATD.INST_CODIGO,
+                            ATD.MODA_ESTUD_CODIGO, ATD.SIST_ESTUD_CODIGO, ATD.TCICLOACAD_CODIGO,
+                            ATD.TFINANCIA_CODIGO, ATD.CICLO_ACAD_CODIGO, ATD.NIVEL_CODIGO, ATD.DEPEN_CODIGO) AS ESTUDIANTES_MATRICULADOS,
+                         EVA_PCK_EVALUACION.fun_calificacion_estu (
+                            ATD.DOCENTE_CEDULA, ATD.INST_CODIGO, ATD.MODA_ESTUD_CODIGO,
+                            ATD.SIST_ESTUD_CODIGO, ATD.TCICLOACAD_CODIGO, ATD.TFINANCIA_CODIGO,
+                            ATD.DEPEN_CODIGO, ATD.CICLO_ACAD_CODIGO, ATD.MATERIA_CODIGO, ATD.NIVEL_CODIGO,
+                            EVA_PCK_EVALUACION.fun_encuesta_codigo (ATD.CICLO_ACAD_CODIGO, '002'), '002') AS CALIFICACION_ESTUDIANTE,
+                         EVA_PCK_EVALUACION.fun_auto_evaluacion (
+                            ATD.DOCENTE_CEDULA, ATD.INST_CODIGO, ATD.MODA_ESTUD_CODIGO,
+                            ATD.SIST_ESTUD_CODIGO, ATD.TCICLOACAD_CODIGO, ATD.TFINANCIA_CODIGO,
+                            ATD.DEPEN_CODIGO, ATD.CICLO_ACAD_CODIGO, ATD.MATERIA_CODIGO, ATD.NIVEL_CODIGO,
+                            EVA_PCK_EVALUACION.fun_encuesta_codigo (ATD.CICLO_ACAD_CODIGO, '003'), '003') AS AUTO_EVALUACION,
+                         EVA_PCK_EVALUACION.fun_auto_evaluacion (
+                            ATD.DOCENTE_CEDULA, ATD.INST_CODIGO, ATD.MODA_ESTUD_CODIGO,
+                            ATD.SIST_ESTUD_CODIGO, ATD.TCICLOACAD_CODIGO, ATD.TFINANCIA_CODIGO,
+                            ATD.DEPEN_CODIGO, ATD.CICLO_ACAD_CODIGO, ATD.MATERIA_CODIGO, ATD.NIVEL_CODIGO,
+                            EVA_PCK_EVALUACION.fun_encuesta_codigo (ATD.CICLO_ACAD_CODIGO, '001'), '001') AS EVALUACION_PAR,
+                         EVA_PCK_EVALUACION.fun_auto_evaluacion (
+                            ATD.DOCENTE_CEDULA, ATD.INST_CODIGO, ATD.MODA_ESTUD_CODIGO,
+                            ATD.SIST_ESTUD_CODIGO, ATD.TCICLOACAD_CODIGO, ATD.TFINANCIA_CODIGO,
+                            ATD.DEPEN_CODIGO, ATD.CICLO_ACAD_CODIGO, ATD.MATERIA_CODIGO, ATD.NIVEL_CODIGO,
+                            EVA_PCK_EVALUACION.fun_encuesta_codigo (ATD.CICLO_ACAD_CODIGO, '004'), '004') AS EVALUACION_DIRECTIVO
+                    FROM    UPECDB.ACA_TAB_MATERIAS ATM
+                         INNER JOIN UPECDB.ACA_TAB_DISTRIBUTIVOS ATD
+                         ON (ATM.NIVEL_CODIGO = ATD.NIVEL_CODIGO) AND (ATM.CODIGO = ATD.MATERIA_CODIGO)
+                   WHERE     (ATD.ESTADO = 'A')
+                         AND (ATD.DEPEN_CODIGO = $P{P_DEPEN_CODIGO})
+                         AND (ATD.INST_CODIGO = $P{P_INST_CODIGO})
+                         AND (ATD.CICLO_ACAD_CODIGO = $P{P_CICLO_ACADEMICO})
+                ORDER BY ATD.NIVEL_CODIGO, 12))]]></query>
+	<field name="NIVEL_CODIGO" class="java.lang.String"/>
+	<field name="DOCENTE_CEDULA" class="java.lang.String"/>
+	<field name="DOCENTES" class="java.lang.String"/>
+	<field name="MATERIA" class="java.lang.String"/>
+	<field name="ESTUDIANTES_ENCUESTA" class="java.math.BigDecimal"/>
+	<field name="ESTUDIANTES_MATRICULADOS" class="java.math.BigDecimal"/>
+	<field name="ESTUDIANTES_SIN_EVALUAR" class="java.math.BigDecimal"/>
+	<field name="CALIFICACION_ESTUDIANTE" class="java.math.BigDecimal"/>
+	<field name="AUTO_EVALUACION" class="java.math.BigDecimal"/>
+	<field name="EVALUACION_PAR" class="java.math.BigDecimal"/>
+	<field name="EVALUACION_DIRECTIVO" class="java.math.BigDecimal"/>
+	<field name="CALIFICACION_TOTAL" class="java.math.BigDecimal"/>
+	<background splitType="Stretch"/>
+	<title height="60" splitType="Stretch">
+		<element kind="staticText" uuid="abcde123-4567-8901-2345-67890abcdef1" x="0" y="10" width="800" height="30" fontName="Century Gothic" fontSize="18.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[Reporte de Evaluación Docente]]></text>
+		</element>
+		<element kind="image" uuid="17717035-e097-4271-8adc-705a8c8b99f5" x="10" y="0" width="197" height="50" onErrorType="Blank">
+			<expression><![CDATA[$P{P_LOGO_PATH}]]></expression>
+		</element>
+	</title>
+	<columnHeader height="30" splitType="Stretch">
+		<element kind="staticText" uuid="e6727bb0-b778-4dd0-9e0c-9d628d0f19c9" mode="Opaque" x="0" y="0" width="30" height="30" backcolor="#FFFFFF" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[NIVEL]]></text>
+			<box>
+				<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+			</box>
+		</element>
+		<element kind="staticText" uuid="e6727bb0-b778-4dd0-9e0c-9d628d0f19ca" mode="Opaque" x="30" y="0" width="70" height="30" backcolor="#FFFFFF" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[CÉDULA]]></text>
+			<box>
+				<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+			</box>
+		</element>
+		<element kind="staticText" uuid="e6727bb0-b778-4dd0-9e0c-9d628d0f19cb" mode="Opaque" x="100" y="0" width="150" height="30" backcolor="#FFFFFF" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[DOCENTE]]></text>
+			<box>
+				<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+			</box>
+		</element>
+		<element kind="staticText" uuid="e6727bb0-b778-4dd0-9e0c-9d628d0f19cc" mode="Opaque" x="250" y="0" width="130" height="30" backcolor="#FFFFFF" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[MATERIA]]></text>
+			<box>
+				<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+			</box>
+		</element>
+		<element kind="staticText" uuid="e6727bb0-b778-4dd0-9e0c-9d628d0f19ce" mode="Opaque" x="380" y="0" width="60" height="30" backcolor="#FFFFFF" fontSize="8.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[EST. MATRIC]]></text>
+			<box>
+				<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+			</box>
+		</element>
+		<element kind="staticText" uuid="e6727bb0-b778-4dd0-9e0c-9d628d0f19cf" mode="Opaque" x="440" y="0" width="60" height="30" backcolor="#FFFFFF" fontSize="8.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[EST. ENCUEST]]></text>
+			<box>
+				<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+			</box>
+		</element>
+		<element kind="staticText" uuid="e6727bb0-b778-4dd0-9e0c-9d628d0f19d0" mode="Opaque" x="500" y="0" width="60" height="30" backcolor="#FFFFFF" fontSize="8.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[EST. SIN EVAL]]></text>
+			<box>
+				<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+			</box>
+		</element>
+		<element kind="staticText" uuid="e6727bb0-b778-4dd0-9e0c-9d628d0f19d1" mode="Opaque" x="560" y="0" width="60" height="30" backcolor="#FFFFFF" fontSize="8.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[CALIF. EST]]></text>
+			<box>
+				<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+			</box>
+		</element>
+		<element kind="staticText" uuid="e6727bb0-b778-4dd0-9e0c-9d628d0f19d2" mode="Opaque" x="620" y="0" width="60" height="30" backcolor="#FFFFFF" fontSize="8.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[AUTO EVAL.]]></text>
+			<box>
+				<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+			</box>
+		</element>
+		<element kind="staticText" uuid="e6727bb0-b778-4dd0-9e0c-9d628d0f19d3" mode="Opaque" x="680" y="0" width="60" height="30" backcolor="#FFFFFF" fontSize="8.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[EVAL. PAR]]></text>
+			<box>
+				<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+			</box>
+		</element>
+		<element kind="staticText" uuid="e6727bb0-b778-4dd0-9e0c-9d628d0f19d4" mode="Opaque" x="740" y="0" width="60" height="30" backcolor="#FFFFFF" fontSize="8.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[CALIF. TOTAL]]></text>
+			<box>
+				<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+			</box>
+		</element>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<element kind="textField" uuid="c24a2dc9-6e3e-4b68-ab6a-66b96ed5e381" stretchType="ElementGroupHeight" x="0" y="0" width="30" height="20" fontSize="8.0" textAdjust="StretchHeight" blankWhenNull="true" vTextAlign="Middle">
+				<expression><![CDATA[$F{NIVEL_CODIGO}]]></expression>
+				<box padding="3">
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#E6E6E6"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#E6E6E6"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#E6E6E6"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#E6E6E6"/>
+				</box>
+			</element>
+			<element kind="textField" uuid="c24a2dc9-6e3e-4b68-ab6a-66b96ed5e382" stretchType="ElementGroupHeight" x="30" y="0" width="70" height="20" fontSize="8.0" textAdjust="StretchHeight" blankWhenNull="true" vTextAlign="Middle">
+				<expression><![CDATA[$F{DOCENTE_CEDULA}]]></expression>
+				<box padding="3">
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#E6E6E6"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#E6E6E6"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#E6E6E6"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#E6E6E6"/>
+				</box>
+			</element>
+			<element kind="textField" uuid="c24a2dc9-6e3e-4b68-ab6a-66b96ed5e383" stretchType="ElementGroupHeight" x="100" y="0" width="150" height="20" fontSize="8.0" textAdjust="StretchHeight" blankWhenNull="true" vTextAlign="Middle">
+				<expression><![CDATA[$F{DOCENTES}]]></expression>
+				<box padding="3">
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#E6E6E6"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#E6E6E6"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#E6E6E6"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#E6E6E6"/>
+				</box>
+			</element>
+			<element kind="textField" uuid="c24a2dc9-6e3e-4b68-ab6a-66b96ed5e384" stretchType="ElementGroupHeight" x="250" y="0" width="130" height="20" fontSize="8.0" textAdjust="StretchHeight" blankWhenNull="true" vTextAlign="Middle">
+				<expression><![CDATA[$F{MATERIA}]]></expression>
+				<box padding="3">
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#E6E6E6"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#E6E6E6"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#E6E6E6"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#E6E6E6"/>
+				</box>
+			</element>
+			<element kind="textField" uuid="c24a2dc9-6e3e-4b68-ab6a-66b96ed5e386" stretchType="ElementGroupHeight" x="380" y="0" width="60" height="20" fontSize="8.0" textAdjust="StretchHeight" blankWhenNull="true" hTextAlign="Right" vTextAlign="Middle">
+				<expression><![CDATA[$F{ESTUDIANTES_MATRICULADOS}]]></expression>
+				<box padding="3">
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#E6E6E6"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#E6E6E6"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#E6E6E6"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#E6E6E6"/>
+				</box>
+			</element>
+			<element kind="textField" uuid="c24a2dc9-6e3e-4b68-ab6a-66b96ed5e387" stretchType="ElementGroupHeight" x="440" y="0" width="60" height="20" fontSize="8.0" textAdjust="StretchHeight" blankWhenNull="true" hTextAlign="Right" vTextAlign="Middle">
+				<expression><![CDATA[$F{ESTUDIANTES_ENCUESTA}]]></expression>
+				<box padding="3">
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#E6E6E6"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#E6E6E6"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#E6E6E6"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#E6E6E6"/>
+				</box>
+			</element>
+			<element kind="textField" uuid="c24a2dc9-6e3e-4b68-ab6a-66b96ed5e388" stretchType="ElementGroupHeight" x="500" y="0" width="60" height="20" fontSize="8.0" textAdjust="StretchHeight" blankWhenNull="true" hTextAlign="Right" vTextAlign="Middle">
+				<expression><![CDATA[$F{ESTUDIANTES_SIN_EVALUAR}]]></expression>
+				<box padding="3">
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#E6E6E6"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#E6E6E6"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#E6E6E6"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#E6E6E6"/>
+				</box>
+			</element>
+			<element kind="textField" uuid="c24a2dc9-6e3e-4b68-ab6a-66b96ed5e389" stretchType="ElementGroupHeight" x="560" y="0" width="60" height="20" fontSize="8.0" textAdjust="StretchHeight" pattern="#,##0.00#" blankWhenNull="true" hTextAlign="Right" vTextAlign="Middle">
+				<expression><![CDATA[$F{CALIFICACION_ESTUDIANTE}]]></expression>
+				<box padding="3">
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#E6E6E6"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#E6E6E6"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#E6E6E6"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#E6E6E6"/>
+				</box>
+			</element>
+			<element kind="textField" uuid="c24a2dc9-6e3e-4b68-ab6a-66b96ed5e390" stretchType="ElementGroupHeight" x="620" y="0" width="60" height="20" fontSize="8.0" textAdjust="StretchHeight" pattern="#,##0.00#" blankWhenNull="true" hTextAlign="Right" vTextAlign="Middle">
+				<expression><![CDATA[$F{AUTO_EVALUACION}]]></expression>
+				<box padding="3">
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#E6E6E6"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#E6E6E6"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#E6E6E6"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#E6E6E6"/>
+				</box>
+			</element>
+			<element kind="textField" uuid="c24a2dc9-6e3e-4b68-ab6a-66b96ed5e391" stretchType="ElementGroupHeight" x="680" y="0" width="60" height="20" fontSize="8.0" textAdjust="StretchHeight" pattern="#,##0.00#" blankWhenNull="true" hTextAlign="Right" vTextAlign="Middle">
+				<expression><![CDATA[$F{EVALUACION_PAR}]]></expression>
+				<box padding="3">
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#E6E6E6"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#E6E6E6"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#E6E6E6"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#E6E6E6"/>
+				</box>
+			</element>
+			<element kind="textField" uuid="c24a2dc9-6e3e-4b68-ab6a-66b96ed5e392" stretchType="ElementGroupHeight" x="740" y="0" width="60" height="20" fontSize="8.0" textAdjust="StretchHeight" pattern="#,##0.00#" blankWhenNull="true" bold="true" hTextAlign="Right" vTextAlign="Middle">
+				<expression><![CDATA[$F{CALIFICACION_TOTAL}]]></expression>
+				<box padding="3">
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#E6E6E6"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#E6E6E6"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#E6E6E6"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#E6E6E6"/>
+				</box>
+			</element>
+		</band>
+	</detail>
+	<pageFooter height="30" splitType="Stretch">
+		<element kind="textField" uuid="1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d" x="600" y="0" width="100" height="30" hTextAlign="Right" vTextAlign="Middle">
+			<expression><![CDATA["Página " + $V{PAGE_NUMBER}]]></expression>
+		</element>
+		<element kind="textField" uuid="2b3c4d5e-6f7a-8b9c-0d1e-2f3a4b5c6d7e" x="700" y="0" width="100" height="30" evaluationTime="Report" hTextAlign="Left" vTextAlign="Middle">
+			<expression><![CDATA[" de " + $V{PAGE_NUMBER}]]></expression>
+		</element>
+		<element kind="textField" uuid="3c4d5e6f-7a8b-9c0d-1e2f-3a4b5c6d7e8f" x="0" y="0" width="200" height="30" pattern="MMM d, yyyy h:mm:ss a" vTextAlign="Middle">
+			<expression><![CDATA[new java.util.Date()]]></expression>
+		</element>
+	</pageFooter>
+</jasperReport>
