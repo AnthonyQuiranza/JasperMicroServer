@@ -46,6 +46,8 @@ $env:ORACLE_NET_TNS_ADMIN = "D:\oracle\network\admin"
 $env:ORACLE_TNS_ALIAS = "ORCLPDB1"
 $env:ORACLE_DB_USER = "app_user"
 $env:ORACLE_DB_PASSWORD = "app_password"
+$env:JASPER_REPORTS_PATH = "classpath:/reports/"
+$env:CORS_ALLOWED_ORIGIN_PATTERNS = "http://localhost:4200,http://localhost:3000"
 ```
 
 ### 3) Ejecutar
@@ -129,3 +131,39 @@ git push -u origin main
 - Implementar rate limiting
 - Centralizar logs (ELK / OpenSearch)
 - Versionar plantillas de reportes por entorno o tenant
+
+## Configurar CORS
+
+El microservicio ya soporta CORS por variables de entorno.
+
+Variables clave:
+
+- `CORS_ENABLED` (true/false)
+- `CORS_PATH_PATTERN` (por defecto `/api/**`)
+- `CORS_ALLOWED_ORIGIN_PATTERNS` (lista separada por comas)
+- `CORS_ALLOWED_METHODS`
+- `CORS_ALLOWED_HEADERS`
+- `CORS_EXPOSED_HEADERS`
+- `CORS_ALLOW_CREDENTIALS`
+- `CORS_MAX_AGE`
+
+Ejemplo rapido para permitir tu frontend:
+
+```powershell
+$env:CORS_ALLOWED_ORIGIN_PATTERNS = "https://mi-frontend.com,http://localhost:4200"
+```
+
+## Actualizar sin perder configuracion o reportes
+
+Regla importante: no guardes configuracion sensible ni reportes personalizados dentro del repo clonado.
+
+Usa rutas externas:
+
+- Variables en archivo externo (`/etc/jasper-report-api.env` en Linux o `.env` fuera del repo en Windows)
+- Reportes personalizados en carpeta externa (ejemplo Linux: `file:/opt/jasper-report-api/custom/reports/`)
+
+Luego define:
+
+- `JASPER_REPORTS_PATH=file:/ruta/externa/reports/`
+
+Asi puedes hacer `git pull` y recompilar sin afectar tus archivos operativos.

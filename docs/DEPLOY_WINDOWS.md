@@ -158,6 +158,15 @@ $env:ORACLE_DB_PASSWORD = "app_password"
 $env:DB_POOL_MAX_SIZE = "10"
 $env:DB_POOL_MIN_IDLE = "2"
 $env:PORT = "8080"
+$env:JASPER_REPORTS_PATH = "file:/C:/apps/JasperData/reports/"
+$env:CORS_ENABLED = "true"
+$env:CORS_PATH_PATTERN = "/api/**"
+$env:CORS_ALLOWED_ORIGIN_PATTERNS = "https://tu-frontend.com,http://localhost:4200"
+$env:CORS_ALLOWED_METHODS = "GET,POST,PUT,PATCH,DELETE,OPTIONS"
+$env:CORS_ALLOWED_HEADERS = "*"
+$env:CORS_EXPOSED_HEADERS = "Content-Disposition"
+$env:CORS_ALLOW_CREDENTIALS = "false"
+$env:CORS_MAX_AGE = "3600"
 ```
 
 ### 5.2 Variables permanentes (a nivel de maquina)
@@ -172,6 +181,15 @@ Ejecuta PowerShell como Administrador:
 [Environment]::SetEnvironmentVariable("DB_POOL_MAX_SIZE", "10", "Machine")
 [Environment]::SetEnvironmentVariable("DB_POOL_MIN_IDLE", "2", "Machine")
 [Environment]::SetEnvironmentVariable("PORT", "8080", "Machine")
+[Environment]::SetEnvironmentVariable("JASPER_REPORTS_PATH", "file:/C:/apps/JasperData/reports/", "Machine")
+[Environment]::SetEnvironmentVariable("CORS_ENABLED", "true", "Machine")
+[Environment]::SetEnvironmentVariable("CORS_PATH_PATTERN", "/api/**", "Machine")
+[Environment]::SetEnvironmentVariable("CORS_ALLOWED_ORIGIN_PATTERNS", "https://tu-frontend.com,http://localhost:4200", "Machine")
+[Environment]::SetEnvironmentVariable("CORS_ALLOWED_METHODS", "GET,POST,PUT,PATCH,DELETE,OPTIONS", "Machine")
+[Environment]::SetEnvironmentVariable("CORS_ALLOWED_HEADERS", "*", "Machine")
+[Environment]::SetEnvironmentVariable("CORS_EXPOSED_HEADERS", "Content-Disposition", "Machine")
+[Environment]::SetEnvironmentVariable("CORS_ALLOW_CREDENTIALS", "false", "Machine")
+[Environment]::SetEnvironmentVariable("CORS_MAX_AGE", "3600", "Machine")
 ```
 
 Cierra y abre una nueva consola para que tomen efecto.
@@ -201,6 +219,14 @@ Cierra y abre una nueva consola para que tomen efecto.
 
 - `PORT`:
   - Puerto HTTP donde se publica la API.
+
+- `JASPER_REPORTS_PATH`:
+  - Ruta de reportes externos para no depender del jar.
+  - Ejemplo: `file:/C:/apps/JasperData/reports/`.
+
+- `CORS_ALLOWED_ORIGIN_PATTERNS`:
+  - Dominios frontend permitidos para consumir la API.
+  - Separa multiples origenes con coma.
 
 ## 7. Ejecutar el microservicio
 
@@ -267,6 +293,20 @@ git pull origin main
 mvn clean package -DskipTests
 Restart-Service JasperReportApi
 ```
+
+### Importante para no perder configuracion ni reportes
+
+1. No guardes reportes personalizados dentro de `C:\apps\JasperMicroServer`.
+2. Crea y usa una ruta externa, por ejemplo:
+
+```powershell
+New-Item -Path "C:\apps\JasperData\reports" -ItemType Directory -Force | Out-Null
+```
+
+3. Define `JASPER_REPORTS_PATH=file:/C:/apps/JasperData/reports/`.
+4. Guarda `.env` fuera del repo si es produccion.
+
+Asi, aunque hagas `git pull`, tus reportes y configuraciones quedan intactos.
 
 ## 11. Problemas comunes
 

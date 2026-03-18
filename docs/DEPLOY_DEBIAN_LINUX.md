@@ -55,6 +55,7 @@ sudo useradd --system --create-home --shell /bin/bash jasperapi
 sudo mkdir -p /opt/jasper-report-api
 sudo mkdir -p /opt/jasper-report-api/config/oracle
 sudo mkdir -p /opt/jasper-report-api/logs
+sudo mkdir -p /opt/jasper-report-api/custom/reports
 sudo chown -R jasperapi:jasperapi /opt/jasper-report-api
 ```
 
@@ -123,6 +124,15 @@ ORACLE_DB_USER=app_user
 ORACLE_DB_PASSWORD=app_password_seguro
 DB_POOL_MAX_SIZE=10
 DB_POOL_MIN_IDLE=2
+JASPER_REPORTS_PATH=file:/opt/jasper-report-api/custom/reports/
+CORS_ENABLED=true
+CORS_PATH_PATTERN=/api/**
+CORS_ALLOWED_ORIGIN_PATTERNS=https://tu-frontend.com,http://localhost:4200
+CORS_ALLOWED_METHODS=GET,POST,PUT,PATCH,DELETE,OPTIONS
+CORS_ALLOWED_HEADERS=*
+CORS_EXPOSED_HEADERS=Content-Disposition
+CORS_ALLOW_CREDENTIALS=false
+CORS_MAX_AGE=3600
 JAVA_OPTS=-Xms256m -Xmx1024m
 ```
 
@@ -223,6 +233,20 @@ sudo -u jasperapi git pull origin main
 sudo -u jasperapi mvn clean package -DskipTests
 sudo ln -sf /opt/jasper-report-api/source/target/jasper-report-api-0.0.1-SNAPSHOT.jar /opt/jasper-report-api/app.jar
 sudo systemctl restart jasper-report-api
+```
+
+### Importante para no perder configuracion ni reportes
+
+- No guardes reportes personalizados dentro de `/opt/jasper-report-api/source`.
+- Guarda tus reportes en `/opt/jasper-report-api/custom/reports`.
+- Mantiene secretos y variables en `/etc/jasper-report-api.env`.
+- Como `JASPER_REPORTS_PATH` apunta a carpeta externa, `git pull` no afecta esos archivos.
+
+Ejemplo para subir un reporte personalizado:
+
+```bash
+sudo cp ventas_custom.jasper /opt/jasper-report-api/custom/reports/
+sudo chown jasperapi:jasperapi /opt/jasper-report-api/custom/reports/ventas_custom.jasper
 ```
 
 ## 12. Solucion de problemas rapida
